@@ -1,0 +1,115 @@
+<h1 id="form-validate"><a href="#form-validate" class="headerlink" title="form-validate"></a>form-validate</h1><p>form-validate表单验证</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>表单验证插件，无任何依赖</p>
+<h2 id="外观"><a href="#外观" class="headerlink" title="外观"></a>外观</h2><p>截图几乎没有任何样式，外观请自己写，本插件只实现各个功能<br><img src="" alt="截图"></p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p><img src="" alt="扫一扫"><br><a href="https://fangxianzheng.github.io/demo/FDatetime-HZC/demo1">表单验证实例</a></p>
+<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>无依赖</p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>在页面中引入所需的文件</p>
+<p><code>&lt;script src=&quot;form-validate.js&quot;&gt;&lt;/script&gt;</code></p>
+<pre><code>var ooo = new validator(&apos;myForm&apos;)
+
+      ooo.add({
+          name:&apos;user&apos;,
+          rules:[&apos;required&apos;,/^[\u2E80-\u9FFF]+$/,&apos;maxLength(4)&apos;],
+          message:[&apos;这项必须填&apos;,&apos;必须是中文&apos;,&apos;最长不能超过4位&apos;],
+          callback:function(el, errorEl){
+              //document.getElementsByTagName(&apos;body&apos;)[0].appendChild(errorEl)
+          }
+      }).add({
+          name:&apos;password&apos;,
+          rules:[&apos;required&apos;,/\d+/,&apos;minLength(5)&apos;],
+          message:[&apos;必须填&apos;,&apos;必须为数字&apos;,&apos;太短&apos;],
+          callback:function(el, errorEl){
+              errorEl.style.cssText = &apos;color:red;&apos;
+
+          }
+      }).add({
+          name:&apos;confirm-password&apos;,
+          sameTo:&apos;password&apos;,
+          message:[&apos;密码必须保持一致&apos;]
+      }).add({
+          name:&apos;mobile&apos;,
+          rules:[/^[1-9]\d{10}$/],
+          message:[&apos;手机号输入错误&apos;]
+      }).add({
+          name:&apos;email&apos;,
+          rules:[/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/],
+          message:[&apos;对不起，您填写的E-mail格式不正确！&apos;]
+      }).add({
+          name:&apos;sure&apos;,
+          rules:[&apos;required&apos;],
+          message:[&apos;这项必须选&apos;]
+      })
+      ooo.remove(&apos;email&apos;)
+      ooo.add({
+          name:&apos;email&apos;,
+          rules:[/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/],
+          message:[&apos;对不起，您填写的E-mail格式不正确！&apos;]
+      })
+
+      document.getElementById(&apos;submit&apos;).addEventListener(&apos;click&apos;,function(){
+          console.log(ooo.valid)
+      })
+</code></pre><h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p><code>var ooo = new validator(form)</code> 这样就实例化了一个对象<code>ooo</code><br><code>form</code> 为form 的ID或name.</p>
+<h3 id="暴露的方法"><a href="#暴露的方法" class="headerlink" title="暴露的方法"></a>暴露的方法</h3><h4 id="add-object-添加验证项"><a href="#add-object-添加验证项" class="headerlink" title=".add(object) 添加验证项"></a><code>.add(object)</code> 添加验证项</h4><p>核心方法，参数<code>object</code> 为一个对象，具体属性和方法如下表</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>默认值</th>
+<th>可填值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>需要验证的表单项</td>
+<td>无 （必填）</td>
+<td>一个input的name活id值</td>
+</tr>
+<tr>
+<td>rules</td>
+<td>验证的规则</td>
+<td>无（必填）</td>
+<td>一个数组，数组内容为’required’,’maxLength(number)’,’minLength(number)’,或正则</td>
+</tr>
+<tr>
+<td>message</td>
+<td>错误信息</td>
+<td>无（必填</td>
+<td>一个数组，数组提示文字对应rules中的规则</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>验证后的回调函数</td>
+<td>function(el, errorEl)）</td>
+<td>代码块，回调函数中的两个参数分别是验证项的元素、错误信息元素</td>
+</tr>
+<tr>
+<td>sameTo</td>
+<td>和哪一项内容相同，一般用于确认密码的input</td>
+<td>无</td>
+<td>一个验证项的id或name， 如 sameTo: ‘password’，意思是和密码内容相同</td>
+</tr>
+</tbody>
+</table>
+<p><code>callback</code>方法的使用：</p>
+<p>1 改变提示信息的颜色 </p>
+<pre><code>.add({
+  //////其他代码
+  callback: function(el, errorEl){
+     errorEl.style.cssText = &apos;color:red;&apos;
+  }
+  //////其他代码
+})
+</code></pre><p>2 改变提示信息的位置</p>
+<pre><code>.add({
+  //////其他代码
+  callback: function(el, errorEl){
+     document.getElementsByTagName(&apos;body&apos;)[0].appendChild(errorEl)
+  }
+  //////其他代码
+})
+</code></pre><p>3 发挥自己想象，想怎么写就怎么写</p>
+<h4 id="remove-inputName-移除验证项"><a href="#remove-inputName-移除验证项" class="headerlink" title=".remove(inputName) 移除验证项"></a><code>.remove(inputName)</code> 移除验证项</h4><p>移除一个验证项，参数为input的内容</p>
+<h4 id="valid-判断是否通过验证，值为true或false"><a href="#valid-判断是否通过验证，值为true或false" class="headerlink" title=".valid 判断是否通过验证，值为true或false"></a><code>.valid</code> 判断是否通过验证，值为<code>true</code>或<code>false</code></h4><p>通常在<code>submit</code>表单的方法中，判断表单是否通过验证，若通过为<code>true</code>，否则为<code>false</code></p>
